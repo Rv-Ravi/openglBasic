@@ -9,7 +9,7 @@ glm::vec3 lerp(float alpha, const glm::vec3& a, const glm::vec3& b)
 Camera::Camera()
 	:m_camPos(0.f),m_camX(1.f, 0.f, 0.f),m_camY(0.f, 1.f, 0.f),m_camZ(0.f,0.f,1.f),m_camDir(-m_camZ),
 	m_right(-10.f), m_left(10.f), m_top(10.f), m_bottom(-10.f),
-	m_viewMat(1.f),m_projMat(1.f),m_viewProjMat(1.f),m_camSpeed(0.f), m_zNear(0.01f), m_zFar(50.f), m_fov(90)
+	m_viewMat(1.f),m_projMat(1.f),m_viewProjMat(1.f),m_camSpeed(0.f), m_zNear(0.01f), m_zFar(50.f), m_fov(45)
 {
 	calcViewMat();
 	calcProjMat();
@@ -19,7 +19,7 @@ Camera::Camera()
 Camera::Camera(const glm::vec3& camPos,bool isOrhto)
 	:m_camPos(camPos), m_camX(1.f, 0.f, 0.f), m_camY(0.f, 1.f, 0.f), m_camZ(0.f, 0.f, 1.f), m_camDir(-m_camZ),
 	m_right(-10.f), m_left(10.f), m_top(10.f), m_bottom(-10.f),
-	m_viewMat(1.f), m_projMat(1.f), m_viewProjMat(1.f), m_camSpeed(0.f), m_zNear(0.01f), m_zFar(50.f), m_fov(90)
+	m_viewMat(1.f), m_projMat(1.f), m_viewProjMat(1.f), m_camSpeed(0.f), m_zNear(0.01f), m_zFar(50.f), m_fov(45)
 {
 	this->isOrtho = isOrhto;
 	calcViewMat();
@@ -86,24 +86,24 @@ void Camera::setFov()
 
 }
 
-void Camera::mvCam(fltPoint dtime)
+void Camera::mvCam(BOG::fltPoint dtime)
 {
 
-	if (!isOrtho && keyState[GLFW_KEY_RIGHT_SHIFT] == 1 && keyState[GLFW_KEY_UP] == 1)
-		m_camSpeed = lerp(dtime, m_camSpeed, m_camMaxVel * -m_camZ);
-	else if (!isOrtho && keyState[GLFW_KEY_RIGHT_SHIFT] == 1 && keyState[GLFW_KEY_DOWN] == 1)
-		m_camSpeed = lerp(dtime, m_camSpeed, m_camMaxVel * m_camZ);
-	else if (keyState[GLFW_KEY_UP] == 1)
+	if ( BOG::keyState[GLFW_KEY_RIGHT_SHIFT] == 1 && BOG::keyState[GLFW_KEY_UP] == 1)
 		m_camSpeed = lerp(dtime, m_camSpeed, m_camMaxVel * m_camY);
-	else if (keyState[GLFW_KEY_DOWN] == 1)
+	else if (BOG::keyState[GLFW_KEY_RIGHT_SHIFT] == 1 && BOG::keyState[GLFW_KEY_DOWN] == 1)
 		m_camSpeed = lerp(dtime, m_camSpeed, m_camMaxVel * -m_camY);
+	else if (!isOrtho && BOG::keyState[GLFW_KEY_UP] == 1)
+		m_camSpeed = lerp(dtime, m_camSpeed, m_camMaxVel * -m_camZ);
+	else if (!isOrtho && BOG::keyState[GLFW_KEY_DOWN] == 1)
+		m_camSpeed = lerp(dtime, m_camSpeed, m_camMaxVel * m_camZ);
 	else
 		m_camSpeed = lerp(dtime, m_camSpeed, 0.f * m_camZ);
 
 
-	if (keyState[GLFW_KEY_RIGHT] == 1)
+	if (BOG::keyState[GLFW_KEY_RIGHT] == 1)
 		m_camSpeed = lerp(dtime, m_camSpeed, m_camMaxVel * m_camX);
-	else if (keyState[GLFW_KEY_LEFT] == 1)
+	else if (BOG::keyState[GLFW_KEY_LEFT] == 1)
 		m_camSpeed = lerp(dtime, m_camSpeed, m_camMaxVel * -m_camX);
 	else
 		m_camSpeed = lerp(dtime, m_camSpeed, 0.f * m_camX);

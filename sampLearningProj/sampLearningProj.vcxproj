@@ -159,8 +159,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Implementations\appInitialize.cpp" />
     <ClCompile Include="Implementations\Camera.cpp" />
     <ClCompile Include="Implementations\shaderProgram.cpp" />
+    <ClCompile Include="Implementations\windowCreation.cpp" />
     <ClCompile Include="MainSrc\Application.cpp" />
     <ClCompile Include="MainSrc\glad.c" />
   </ItemGroup>
@@ -168,6 +170,7 @@
     <ClInclude Include="Headers\appInitialize.h" />
     <ClInclude Include="Headers\Camera.h" />
     <ClInclude Include="Headers\shaderProgram.h" />
+    <ClInclude Include="Headers\windowCreation.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="additionalSrc\shaders\simple\simpleObj.shader" />

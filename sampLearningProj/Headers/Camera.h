@@ -3,16 +3,13 @@
 
 #include "appInitialize.h"
 
-
-
-
 class Camera
 {
 	private:
 		glm::vec3 m_camPos, m_camX, m_camY, m_camZ,m_camDir, m_camMaxVel = glm::vec3(6.3f), m_camSpeed;
 		glm::mat4 m_viewMat, m_projMat, m_viewProjMat;
 
-		fltPoint m_zNear,m_zFar,m_fov,m_right,m_left,m_top,m_bottom;
+		BOG::fltPoint m_zNear,m_zFar,m_fov,m_right,m_left,m_top,m_bottom;
 
 		bool isOrtho = false;
 
@@ -41,7 +38,7 @@ class Camera
 		void calcViewProjMat();
 
 		void setFov();
-		void mvCam(fltPoint dtime);
+		void mvCam(BOG::fltPoint dtime);
 
 };
 

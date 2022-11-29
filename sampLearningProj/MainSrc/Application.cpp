@@ -2,18 +2,15 @@
 #include "../Headers/Camera.h"
 #include "stb/stb_image.h"
 
-
 Camera cam_1({ 0.f, 0.5f, 5.f });
-
-
 
 int main()
 {
-	if (!appInitialize())
+	if (!BOG::appInitialize())
 	{
 		exit(1);
 	}
-
+	
 	uint32_t VBO, VAO, IBO;
 
 	ErrCheck(glGenVertexArrays(1, &VAO));
@@ -24,15 +21,15 @@ int main()
 	ErrCheck(glBindBuffer(GL_ARRAY_BUFFER, VBO));
 	ErrCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO));
 
-	ErrCheck(glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData) * 16, &block, GL_STATIC_DRAW));
-	ErrCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 36, &blockIndex, GL_STATIC_DRAW));
+	ErrCheck(glBufferData(GL_ARRAY_BUFFER, sizeof(BOG::vertexData) * 16, &BOG::block, GL_STATIC_DRAW));
+	ErrCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 36, &BOG::blockIndex, GL_STATIC_DRAW));
 
 	ErrCheck(glEnableVertexAttribArray(0));
-	ErrCheck(glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, sizeof(vertexData),&((vertexData*)0)->vertexPos));
+	ErrCheck(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(BOG::vertexData), &((BOG::vertexData*)0)->vertexPos));
 	ErrCheck(glEnableVertexAttribArray(1));
-	ErrCheck(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertexData), &((vertexData*)0)->vertexCol));
+	ErrCheck(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(BOG::vertexData), &((BOG::vertexData*)0)->vertexCol));
 	ErrCheck(glEnableVertexAttribArray(2));
-	ErrCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(vertexData), &((vertexData*)0)->texCoord));
+	ErrCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(BOG::vertexData), &((BOG::vertexData*)0)->texCoord));
 
 	ErrCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	ErrCheck(glBindVertexArray(0));
@@ -70,7 +67,7 @@ int main()
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glm::mat4 model = glm::mat4(1.f);
-	
+
 	shaderProgram prog("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\simple\\simpleObj.shader");
 
 	float val[] = { 1.f,0.f,1.f };
@@ -82,14 +79,15 @@ int main()
 	prog.setUniValueM("transMat", &model[0].x, 4);
 	prog.unbindProgram();
 
-	fltPoint currFramTime = 0.f, preFramTime = 0.f, FramTimePeriod;
+	BOG::fltPoint currFramTime = 0.f, preFramTime = 0.f, FramTimePeriod;
 
 	uint32_t fCount = 0;
 
 
 	glm::mat4 viewProjMat;
 	
-	while (!glfwWindowShouldClose((GLFWwindow*)mainWindow[0]))
+
+	while (!glfwWindowShouldClose(BOG::mainWindow->getWindow()))
 	{
 
 		
@@ -97,37 +95,22 @@ int main()
 		FramTimePeriod = currFramTime - preFramTime;
 		preFramTime = currFramTime;
 
-		setColorBufer(1.f, .5f, .4f, 1.f);
-		while (!glfwWindowShouldClose((GLFWwindow*)mainWindow[1]))
-		{
-			glfwMakeContextCurrent((GLFWwindow*)mainWindow[1]);
-			glfwSwapBuffers((GLFWwindow*)mainWindow[1]);
-			
-			if (glfwGetKey((GLFWwindow*)mainWindow[1],GLFW_KEY_C) == GLFW_PRESS)
-			{
-				glfwSetWindowShouldClose((GLFWwindow*)mainWindow[1], true);
-				glfwDestroyWindow((GLFWwindow*)mainWindow[1]);
-				//glfwMakeContextCurrent((GLFWwindow*)mainWindow[0]);
-			}
-			glfwPollEvents();
-		}
-		
+		BOG::setColorBufer(1.f, .5f, .4f, 1.f);
 
 		glBindTextureUnit(0, texId);
 		prog.bindProgram();
-		
+
 		prog.setUniValueM("viewProj", &viewProjMat[0].x, 4);
 		ErrCheck(glBindVertexArray(VAO));
-		ErrCheck(glDrawElements(GL_TRIANGLES, blockIndex.size(), GL_UNSIGNED_INT, 0));
+		ErrCheck(glDrawElements(GL_TRIANGLES, BOG::blockIndex.size(), GL_UNSIGNED_INT, 0));
 		prog.unbindProgram();
 
-		glfwSwapBuffers((GLFWwindow*)mainWindow[0]);
+		glfwSwapBuffers(BOG::mainWindow->getWindow());
 		cam_1.mvCam(FramTimePeriod);
 		viewProjMat = cam_1.getViewProjMat();
 		glfwPollEvents();
 	}
 
-	glfwDestroy();
-
+	delete BOG::mainWindow;
 	return 0;
 }
