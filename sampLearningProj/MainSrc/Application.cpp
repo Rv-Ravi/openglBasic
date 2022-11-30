@@ -12,7 +12,6 @@ int main()
 	}
 	
 	BOG::Camera cam_1({ 0.f, 0.5f, 5.f });
-	BOG::Camera cam_2({ 3.f, 0.5f, 5.f });
 
 
 	glfwSetScrollCallback(BOG::mainWindow->getWindow(), [](GLFWwindow* window, double xPos, double yPos) {
