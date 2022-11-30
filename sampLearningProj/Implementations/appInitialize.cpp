@@ -83,7 +83,6 @@ namespace BOG {
 	std::array<uint16_t, GLFW_KEY_LAST> keyState = { 0 };
 	windowCreation* mainWindow = nullptr;
 
-
 	void setColorBufer(fltPoint x, fltPoint y, fltPoint z, fltPoint a) {
 		ErrCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		ErrCheck(glClearDepth(1.0f));

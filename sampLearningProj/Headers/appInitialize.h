@@ -37,7 +37,6 @@ namespace BOG {
 	extern std::array<vertexData, 4> square;
 	extern std::array<uint32_t, 6> squareIndex;
 	extern BOG::windowCreation* mainWindow;
-	//extern Camera* cam_1; ({ 0.f, 0.5f, 5.f });
 
 	extern void setColorBufer(fltPoint x, fltPoint y, fltPoint z, fltPoint a);
 

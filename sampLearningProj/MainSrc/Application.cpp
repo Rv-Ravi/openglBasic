@@ -2,7 +2,7 @@
 #include "../Headers/Camera.h"
 #include "stb/stb_image.h"
 
-Camera cam_1({ 0.f, 0.5f, 5.f });
+
 
 int main()
 {
@@ -11,6 +11,14 @@ int main()
 		exit(1);
 	}
 	
+	BOG::Camera cam_1({ 0.f, 0.5f, 5.f });
+	BOG::Camera cam_2({ 3.f, 0.5f, 5.f });
+
+
+	glfwSetScrollCallback(BOG::mainWindow->getWindow(), [](GLFWwindow* window, double xPos, double yPos) {
+			BOG::setFov(*BOG::currentCam, yPos);
+		});
+
 	uint32_t VBO, VAO, IBO;
 
 	ErrCheck(glGenVertexArrays(1, &VAO));
@@ -106,8 +114,12 @@ int main()
 		prog.unbindProgram();
 
 		glfwSwapBuffers(BOG::mainWindow->getWindow());
-		cam_1.mvCam(FramTimePeriod);
-		viewProjMat = cam_1.getViewProjMat();
+		BOG::currentCam->mvCam(FramTimePeriod);
+		viewProjMat = BOG::currentCam->getViewProjMat();
+
+		BOG::Camera::changeCam();
+
+
 		glfwPollEvents();
 	}
 
