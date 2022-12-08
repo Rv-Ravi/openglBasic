@@ -35,7 +35,7 @@ namespace BOG {
 		glm::vec3 getCamDir();
 
 		static void changeCam();
-		void camChngProj();
+		void camChngProj(); 
 
 		inline void setOrtho(bool val) { isOrtho = val; }
 		inline bool getOrtho() { return isOrtho; }

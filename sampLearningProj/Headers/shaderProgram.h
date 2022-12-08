@@ -59,7 +59,35 @@ public:
 				default: printf("No such value is found for setting int* type as uniform."); break;
 			}
 		}
+		
+	}
 
+	template<typename varType>
+	void setUniValuefV(const char* varName, const varType& value, uint16_t size)
+	{
+		int32_t tmpVal = getUlocation(varName);
+		switch (size)
+		{
+		case 1: ErrCheck(glUniform1fv(tmpVal, 1, &value.x)); break;
+		case 2: ErrCheck(glUniform2fv(tmpVal, 1, &value.x)); break;
+		case 3: ErrCheck(glUniform3fv(tmpVal, 1, &value.x)); break;
+		case 4: ErrCheck(glUniform4fv(tmpVal, 1, &value.x)); break;
+		default: printf("No such value is found for setting int* type as uniform."); break;
+		}
+	}
+
+	template<typename varType>
+	void setUniValueiV(const char* varName, const varType& value, uint16_t size)
+	{
+		int32_t tmpVal = getUlocation(varName);
+		switch (size)
+		{
+		case 1: ErrCheck(glUniform1iv(tmpVal, 1, &value.x)); break;
+		case 2: ErrCheck(glUniform2iv(tmpVal, 1, &value.x)); break;
+		case 3: ErrCheck(glUniform3iv(tmpVal, 1, &value.x)); break;
+		case 4: ErrCheck(glUniform4iv(tmpVal, 1, &value.x)); break;
+		default: printf("No such value is found for setting int* type as uniform."); break;
+		}
 	}
 
 	void setUniValueM(const char* varName, const float* value, uint16_t size)

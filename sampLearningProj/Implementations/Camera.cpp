@@ -14,7 +14,7 @@ namespace BOG {
 		m_right(10.f), m_left(-10.f), m_top(10.f), m_bottom(-10.f), m_pitch(0.f), m_yaw(0.f), m_lastX(0.f), m_lastY(0.f),
 		m_viewMat(1.f), m_projMat(1.f), m_viewProjMat(1.f), m_camSpeed(0.f), m_zNear(0.01f), m_zFar(50.f), m_fov(45)
 	{
-		if (ms_camList.begin() == ms_camList.end())
+		if (ms_camList.size() == 0)
 		{
 			ms_camList.reserve(5);
 			BOG::currentCam = this;
@@ -32,7 +32,7 @@ namespace BOG {
 		m_right(10.f), m_left(-10.f), m_top(10.f), m_bottom(-10.f), m_pitch(0.f), m_yaw(0.f), m_lastX(0.f), m_lastY(0.f),
 		m_viewMat(1.f), m_projMat(1.f), m_viewProjMat(1.f), m_camSpeed(0.f), m_zNear(0.01f), m_zFar(50.f), m_fov(45)
 	{
-		if (ms_camList.begin() == ms_camList.end())
+		if (ms_camList.size() == 0)
 		{
 			ms_camList.reserve(5);
 			BOG::currentCam = this;
@@ -113,23 +113,23 @@ namespace BOG {
 	void Camera::changeCam() {
 		if (BOG::keyState[GLFW_KEY_C] == 1 && BOG::keyState[GLFW_KEY_1] == 1)
 		{
-			BOG::currentCam = (ms_camList[0])? ms_camList[0] : BOG::currentCam;
+			BOG::currentCam = (int16_t(ms_camList.size()) - 1 >= 0)? ms_camList[0] : BOG::currentCam;
 		}
 		else if (BOG::keyState[GLFW_KEY_C] == 1 && BOG::keyState[GLFW_KEY_2] == 1)
 		{
-			BOG::currentCam = (ms_camList[1]) ? ms_camList[1] : BOG::currentCam;
+			BOG::currentCam = (int16_t(ms_camList.size()) - 2 >= 0) ? ms_camList[1] : BOG::currentCam;
 		}
 		else if (BOG::keyState[GLFW_KEY_C] == 1 && BOG::keyState[GLFW_KEY_3] == 1)
 		{
-			BOG::currentCam = (ms_camList[2]) ? ms_camList[2] : BOG::currentCam;
+			BOG::currentCam = (int16_t(ms_camList.size()) - 3 >= 0) ? ms_camList[2] : BOG::currentCam;
 		}
 		else if (BOG::keyState[GLFW_KEY_C] == 1 && BOG::keyState[GLFW_KEY_4] == 1)
 		{
-			BOG::currentCam = (ms_camList[3]) ? ms_camList[3] : BOG::currentCam;
+			BOG::currentCam = (int16_t(ms_camList.size()) - 4 >= 0) ? ms_camList[3] : BOG::currentCam;
 		}
 		else if (BOG::keyState[GLFW_KEY_C] == 1 && BOG::keyState[GLFW_KEY_5] == 1)
 		{
-			BOG::currentCam = (ms_camList[4]) ? ms_camList[4] : BOG::currentCam;
+			BOG::currentCam = (int16_t(ms_camList.size()) - 5 >= 0) ? ms_camList[4] : BOG::currentCam;
 		}
 	}
 

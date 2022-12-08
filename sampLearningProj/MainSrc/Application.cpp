@@ -12,6 +12,7 @@ int main()
 	}
 	
 	BOG::Camera cam_1({ 0.f, 0.5f, 5.f });
+	BOG::Camera cam_2({ 0.f, 5.5f, 5.f });
 
 
 	glfwSetScrollCallback(BOG::mainWindow->getWindow(), [](GLFWwindow* window, double xPos, double yPos) {
@@ -73,20 +74,27 @@ int main()
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glm::mat4 model = glm::mat4(1.f);
+	glm::mat4 model = glm::mat4(1.f), model2 = glm::translate(glm::mat4(1.f),glm::vec3(0.f,5.f,0.f)) * 
+		glm::scale(glm::mat4(1.f), glm::vec3(0.2f, 0.2f, 0.2f));
+
+	glm::vec3 lightColor(0.f, 0.f, 0.f);
 
 	shaderProgram prog("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\simple\\simpleObj.shader");
-
+	shaderProgram prog1("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\simple\\simpLightShader.shader");
 	float val[] = { 1.f,0.f,1.f };
 
 	prog.bindProgram();
-	int val1[] = { 0 };
 	prog.setUniValueV<float*>("uColor", val, 3);
 	prog.setUniValue<int>("texUnit", 0);
 	prog.setUniValueM("transMat", &model[0].x, 4);
 	prog.unbindProgram();
 
-	BOG::fltPoint currFramTime = 0.f, preFramTime = 0.f, FramTimePeriod;
+	prog1.bindProgram();
+	prog1.setUniValueM("transMat", &model2[0].x, 4);
+	
+	prog1.unbindProgram();
+
+	BOG::fltPoint currFramTime = 0.f, preFramTime = 0.f, FramTimePeriod,chngVal = 42.f;
 
 	uint32_t fCount = 0;
 
@@ -102,22 +110,33 @@ int main()
 		FramTimePeriod = currFramTime - preFramTime;
 		preFramTime = currFramTime;
 
-		BOG::setColorBufer(1.f, .5f, .4f, 1.f);
+		BOG::setColorBufer(lightColor.x, lightColor.y, lightColor.z,1.f);
 
 		glBindTextureUnit(0, texId);
+		ErrCheck(glBindVertexArray(VAO));
 		prog.bindProgram();
 
 		prog.setUniValueM("viewProj", &viewProjMat[0].x, 4);
-		ErrCheck(glBindVertexArray(VAO));
+		
 		ErrCheck(glDrawElements(GL_TRIANGLES, BOG::blockIndex.size(), GL_UNSIGNED_INT, 0));
 		prog.unbindProgram();
 
+		prog1.bindProgram();
+		prog1.setUniValuefV("lightColor", lightColor, 3);
+		prog1.setUniValueM("viewProj", &viewProjMat[0].x, 4);
+
+		ErrCheck(glDrawElements(GL_TRIANGLES, BOG::blockIndex.size(), GL_UNSIGNED_INT, 0));
+		prog1.unbindProgram();
+
+		ErrCheck(glBindVertexArray(0));
 		glfwSwapBuffers(BOG::mainWindow->getWindow());
 		BOG::currentCam->mvCam(FramTimePeriod);
 		viewProjMat = BOG::currentCam->getViewProjMat();
 
 		BOG::Camera::changeCam();
 
+		lightColor = glm::vec3(abs(sin(chngVal + 9.f)), abs(sin(chngVal - 12.f)), abs(sin(chngVal - 5.f)));
+		chngVal += FramTimePeriod;
 
 		glfwPollEvents();
 	}
