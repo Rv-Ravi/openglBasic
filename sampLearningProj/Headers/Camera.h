@@ -20,7 +20,7 @@ namespace BOG {
 		
 		//Constructors
 		Camera();
-		Camera(const glm::vec3& camPos, bool isOrtho = true);
+		Camera(const glm::vec3& camPos, bool isOrtho = false);
 
 		~Camera();
 
@@ -35,7 +35,7 @@ namespace BOG {
 		glm::vec3 getCamDir();
 
 		static void changeCam();
-		void camChngProj();
+		void camChngProj(); 
 
 		inline void setOrtho(bool val) { isOrtho = val; }
 		inline bool getOrtho() { return isOrtho; }
