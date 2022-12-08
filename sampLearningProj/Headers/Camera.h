@@ -20,7 +20,7 @@ namespace BOG {
 		
 		//Constructors
 		Camera();
-		Camera(const glm::vec3& camPos, bool isOrtho = true);
+		Camera(const glm::vec3& camPos, bool isOrtho = false);
 
 		~Camera();
 
