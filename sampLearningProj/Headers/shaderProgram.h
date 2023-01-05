@@ -32,32 +32,18 @@ public:
 	int32_t getUlocation(const char* varName);
 	
 	template<typename varType>
-	void setUniValueV(const char* varName,const varType value, uint16_t size)
+	void setUniValueV(const char* varName,const varType value)
 	{
 		int32_t tmpVal = getUlocation(varName);
 
-		if (typeid(varType) == typeid(float*))
+		if (typeid(varType) == typeid(float))
 		{
-			switch (size)
-			{
-				case 1: ErrCheck(glUniform1f(tmpVal, value[0])); break;
-				case 2: ErrCheck(glUniform2f(tmpVal, value[0], value[1])); break;
-				case 3: ErrCheck(glUniform3f(tmpVal, value[0], value[1], value[2])); break;
-				case 4: ErrCheck(glUniform4f(tmpVal, value[0], value[1], value[2], value[4])); break;
-				default: printf("No such value is found for setting float* type as uniform."); break;
-			}
+			ErrCheck(glUniform1f(tmpVal, value));
 		}
 
-		else if (typeid(varType) == typeid(int32_t*))
+		else if (typeid(varType) == typeid(int32_t))
 		{
-			switch (size)
-			{
-				case 1: ErrCheck(glUniform1i(tmpVal, value[0])); break;
-				case 2: ErrCheck(glUniform2i(tmpVal, value[0], value[1])); break;
-				case 3: ErrCheck(glUniform3i(tmpVal, value[0], value[1], value[2])); break;
-				case 4: ErrCheck(glUniform4i(tmpVal, value[0], value[1], value[2], value[4])); break;
-				default: printf("No such value is found for setting int* type as uniform."); break;
-			}
+			ErrCheck(glUniform1i(tmpVal, value));
 		}
 		
 	}

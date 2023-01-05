@@ -155,4 +155,13 @@ namespace BOG {
 	Materials::~Materials()
 	{
 	}
+	TextureMate::TextureMate(uint32_t dif, uint32_t spec, BOG::fltPoint shin)
+	{
+		m_diffuse = dif;
+		m_specular = spec;
+		m_shininess = shin;
+	}
+	TextureMate::~TextureMate()
+	{
+	}
 }

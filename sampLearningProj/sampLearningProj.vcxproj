@@ -177,6 +177,7 @@
     <None Include="additionalSrc\shaders\Lighting\materialPhongLit.shader" />
     <None Include="additionalSrc\shaders\Lighting\simpleAmbientLit.shader" />
     <None Include="additionalSrc\shaders\Lighting\simpleDiffuseLit.shader" />
+    <None Include="additionalSrc\shaders\Lighting\texturePhongLit.shader" />
     <None Include="additionalSrc\shaders\simple\simpleObj.shader" />
     <None Include="additionalSrc\shaders\simple\simpLightShader.shader" />
   </ItemGroup>

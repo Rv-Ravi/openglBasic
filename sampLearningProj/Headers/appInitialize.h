@@ -41,6 +41,16 @@ namespace BOG {
 		~Materials();
 	};
 
+
+	struct TextureMate {
+		uint32_t m_diffuse;
+		uint32_t m_specular;
+		BOG::fltPoint m_shininess;
+
+		TextureMate(uint32_t dif = 0, uint32_t spec = 0, BOG::fltPoint shin = 20.f);
+		~TextureMate();
+	};
+
 	extern std::array<uint16_t, GLFW_KEY_LAST> keyState;
 	extern std::array<vertexData, 16> block;
 	extern std::array<uint32_t, 36> blockIndex;
