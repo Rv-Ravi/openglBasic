@@ -50,5 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="additionalSrc\shaders\simple\simpleObj.shader" />
+    <None Include="additionalSrc\shaders\simple\simpLightShader.shader" />
+    <None Include="additionalSrc\shaders\Lighting\simpleAmbientLit.shader" />
+    <None Include="additionalSrc\shaders\Lighting\simpleDiffuseLit.shader" />
+    <None Include="additionalSrc\shaders\Lighting\basicPhongLit.shader" />
+    <None Include="additionalSrc\shaders\Lighting\materialPhongLit.shader" />
   </ItemGroup>
 </Project>

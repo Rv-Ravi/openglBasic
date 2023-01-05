@@ -38,6 +38,8 @@ int main()
 	ErrCheck(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(BOG::vertexData), &((BOG::vertexData*)0)->vertexCol));
 	ErrCheck(glEnableVertexAttribArray(2));
 	ErrCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(BOG::vertexData), &((BOG::vertexData*)0)->texCoord));
+	ErrCheck(glEnableVertexAttribArray(3));
+	ErrCheck(glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(BOG::vertexData), &((BOG::vertexData*)0)->vertexNormal));
 
 	ErrCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	ErrCheck(glBindVertexArray(0));
@@ -77,11 +79,20 @@ int main()
 	glm::mat4 model = glm::mat4(1.f), model2 = glm::translate(glm::mat4(1.f),glm::vec3(0.f,5.f,0.f)) * 
 		glm::scale(glm::mat4(1.f), glm::vec3(0.2f, 0.2f, 0.2f));
 
-	glm::vec3 lightColor(0.f, 0.f, 0.f);
+	glm::vec3 lightColor(1.f, 1.f, 1.f);
+	//GOLD --> 0.24725	0.1995	0.0745	0.75164	0.60648	0.22648	0.628281	0.555802	0.366065	0.4
+	BOG::Materials material(glm::vec3(0.24725,	0.1995,	0.0745),
+		glm::vec3(0.75164,	0.60648	,0.22648),
+		glm::vec3(0.628281,	0.555802,0.366065),
+		102.4f
+	);
 
 	shaderProgram prog("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\simple\\simpleObj.shader");
 	shaderProgram prog1("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\simple\\simpLightShader.shader");
-	float val[] = { 1.f,0.f,1.f };
+	shaderProgram prog2("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\Lighting\\simpleAmbientLit.shader");
+	shaderProgram prog3("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\Lighting\\basicPhongLit.shader");
+	shaderProgram prog4("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\Lighting\\materialPhongLit.shader");
+	float val[] = { 0.6f,0.3f,1.f };
 
 	prog.bindProgram();
 	prog.setUniValueV<float*>("uColor", val, 3);
@@ -93,6 +104,35 @@ int main()
 	prog1.setUniValueM("transMat", &model2[0].x, 4);
 	
 	prog1.unbindProgram();
+
+	prog2.bindProgram();
+	prog2.setUniValueV<float*>("uColor", val, 3);
+	prog2.setUniValue<int>("texUnit", 0);
+	prog2.setUniValueM("transMat", &model[0].x, 4);
+	prog2.unbindProgram();
+
+	glm::mat3 normlMat = glm::mat3(1.f);
+
+	prog3.bindProgram();
+	prog3.setUniValuefV("lightColor", lightColor, 3);
+	prog3.setUniValueV<float*>("uColor", val, 3);
+	prog3.setUniValue<int>("texUnit", 0);
+	prog3.setUniValueM("transMat", &model[0].x, 4);
+	prog3.setUniValueM("normalMat", &normlMat[0].x, 3);
+	prog3.unbindProgram();
+
+	prog4.bindProgram();
+	prog4.setUniValuefV("lightColor", lightColor, 3);
+	prog4.setUniValueM("transMat", &model[0].x, 4);
+	prog4.setUniValueM("normalMat", &normlMat[0].x, 3);
+
+	prog4.setUniValuefV("material.m_ambient", material.m_ambient, 3);
+	prog4.setUniValuefV("material.m_diffuse", material.m_diffuse, 3);
+	prog4.setUniValuefV("material.m_specular", material.m_specular, 3);
+	prog4.setUniValueV("material.m_shininess", &material.m_shininess, 1);
+
+	prog4.unbindProgram();
+
 
 	BOG::fltPoint currFramTime = 0.f, preFramTime = 0.f, FramTimePeriod,chngVal = 42.f;
 
@@ -110,23 +150,19 @@ int main()
 		FramTimePeriod = currFramTime - preFramTime;
 		preFramTime = currFramTime;
 
-		BOG::setColorBufer(lightColor.x, lightColor.y, lightColor.z,1.f);
+		BOG::setColorBufer(0.25f,0.25f,0.25f,1.f);
 
 		glBindTextureUnit(0, texId);
 		ErrCheck(glBindVertexArray(VAO));
-		prog.bindProgram();
 
-		prog.setUniValueM("viewProj", &viewProjMat[0].x, 4);
-		
-		ErrCheck(glDrawElements(GL_TRIANGLES, BOG::blockIndex.size(), GL_UNSIGNED_INT, 0));
-		prog.unbindProgram();
 
-		prog1.bindProgram();
-		prog1.setUniValuefV("lightColor", lightColor, 3);
-		prog1.setUniValueM("viewProj", &viewProjMat[0].x, 4);
+		prog4.bindProgram();
+		prog4.setUniValueM("viewProj", &viewProjMat[0].x, 4);
+		prog4.setUniValuefV("lightPos", BOG::currentCam->getPos(), 3);
+		prog4.setUniValuefV("camPos", BOG::currentCam->getPos(), 3);
 
 		ErrCheck(glDrawElements(GL_TRIANGLES, BOG::blockIndex.size(), GL_UNSIGNED_INT, 0));
-		prog1.unbindProgram();
+		prog4.unbindProgram();
 
 		ErrCheck(glBindVertexArray(0));
 		glfwSwapBuffers(BOG::mainWindow->getWindow());
@@ -134,9 +170,6 @@ int main()
 		viewProjMat = BOG::currentCam->getViewProjMat();
 
 		BOG::Camera::changeCam();
-
-		lightColor = glm::vec3(abs(sin(chngVal + 9.f)), abs(sin(chngVal - 12.f)), abs(sin(chngVal - 5.f)));
-		chngVal += FramTimePeriod;
 
 		glfwPollEvents();
 	}

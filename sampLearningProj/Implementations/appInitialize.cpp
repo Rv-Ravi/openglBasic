@@ -140,32 +140,19 @@ namespace BOG {
 			});
 		ErrCheck(glEnable(GL_DEPTH_TEST));
 
-		glfwSetWindowCloseCallback(BOG::mainWindow->getWindow(), [](GLFWwindow* window) {
-			BOG::windowCreation wind("Samll wind", 200, 200);
-				while (!glfwWindowShouldClose(wind.getWindow()))
-				{
-
-					glfwSwapBuffers(wind.getWindow());
-					if (glfwGetKey(wind.getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
-					{
-						glfwSetWindowShouldClose(wind.getWindow(), true);
-						glfwSetWindowShouldClose(BOG::mainWindow->getWindow(), false);
-					}
-					else if (glfwGetKey(wind.getWindow(), GLFW_KEY_ENTER) == GLFW_PRESS)
-					{
-						glfwSetWindowShouldClose(wind.getWindow(), true);
-						glfwSetWindowShouldClose(BOG::mainWindow->getWindow(), true);
-					}
-					else {
-						glfwSetWindowShouldClose(BOG::mainWindow->getWindow(), false);
-					}
-					glfwPollEvents();
-				}
-				wind.destroy();
-			});
-
 
 		setColorBufer(1.f, .5f, .4f, 1.f);
 		return true;
+	}
+	Materials::Materials(glm::vec3 amb, glm::vec3 dif , glm::vec3 spec
+		, BOG::fltPoint shin)
+	{
+		m_ambient = amb;
+		m_diffuse = dif;
+		m_specular = spec;
+		m_shininess = shin;
+	}
+	Materials::~Materials()
+	{
 	}
 }
