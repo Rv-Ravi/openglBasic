@@ -2,7 +2,7 @@
 #include "../Headers/Camera.h"
 #include "stb/stb_image.h"
 
-
+uint32_t attachTexture(std::string path);
 
 int main()
 {
@@ -45,36 +45,11 @@ int main()
 	ErrCheck(glBindVertexArray(0));
 	ErrCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 
-
-	uint32_t texId;
-	glGenTextures(1, &texId);
-	glBindTexture(GL_TEXTURE_2D, texId);
-
-	//float broderColor[] = { .5f,1.f,.78f,1.f };
-	//glTextureParameterfv(texId, GL_TEXTURE_BORDER_COLOR, broderColor);
-
-	glTextureParameteri(texId, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-	glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	int32_t iWidth, iHeight, iNoc;
-	stbi_set_flip_vertically_on_load(1);
-	unsigned char* imgData = stbi_load("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\Textures\\5052652.png", &iWidth, &iHeight, &iNoc, 0);
-
-	if (imgData)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iWidth, iHeight, 0, iNoc < 4 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, imgData);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cerr << "Unable to load the image file.\n";
-	}
-	stbi_image_free(imgData);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
+	
+	BOG::TextureMate texture(attachTexture("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\Textures\\wallDiff.png"),
+		attachTexture("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\Textures\\wallSpec.png"),
+		2.f
+	);
 
 	glm::mat4 model = glm::mat4(1.f), model2 = glm::translate(glm::mat4(1.f),glm::vec3(0.f,5.f,0.f)) * 
 		glm::scale(glm::mat4(1.f), glm::vec3(0.2f, 0.2f, 0.2f));
@@ -92,10 +67,11 @@ int main()
 	shaderProgram prog2("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\Lighting\\simpleAmbientLit.shader");
 	shaderProgram prog3("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\Lighting\\basicPhongLit.shader");
 	shaderProgram prog4("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\Lighting\\materialPhongLit.shader");
+	shaderProgram prog5("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\Lighting\\texturePhongLit.shader");
 	float val[] = { 0.6f,0.3f,1.f };
 
 	prog.bindProgram();
-	prog.setUniValueV<float*>("uColor", val, 3);
+	prog.setUniValuefV("uColor", glm::vec3(0.6f, 0.3f, 1.f), 3);
 	prog.setUniValue<int>("texUnit", 0);
 	prog.setUniValueM("transMat", &model[0].x, 4);
 	prog.unbindProgram();
@@ -106,7 +82,7 @@ int main()
 	prog1.unbindProgram();
 
 	prog2.bindProgram();
-	prog2.setUniValueV<float*>("uColor", val, 3);
+	prog2.setUniValuefV("uColor", glm::vec3(0.6f, 0.3f, 1.f), 3);
 	prog2.setUniValue<int>("texUnit", 0);
 	prog2.setUniValueM("transMat", &model[0].x, 4);
 	prog2.unbindProgram();
@@ -115,7 +91,7 @@ int main()
 
 	prog3.bindProgram();
 	prog3.setUniValuefV("lightColor", lightColor, 3);
-	prog3.setUniValueV<float*>("uColor", val, 3);
+	prog3.setUniValuefV("uColor", glm::vec3(0.6f, 0.3f, 1.f), 3);
 	prog3.setUniValue<int>("texUnit", 0);
 	prog3.setUniValueM("transMat", &model[0].x, 4);
 	prog3.setUniValueM("normalMat", &normlMat[0].x, 3);
@@ -125,14 +101,23 @@ int main()
 	prog4.setUniValuefV("lightColor", lightColor, 3);
 	prog4.setUniValueM("transMat", &model[0].x, 4);
 	prog4.setUniValueM("normalMat", &normlMat[0].x, 3);
-
 	prog4.setUniValuefV("material.m_ambient", material.m_ambient, 3);
 	prog4.setUniValuefV("material.m_diffuse", material.m_diffuse, 3);
 	prog4.setUniValuefV("material.m_specular", material.m_specular, 3);
-	prog4.setUniValueV("material.m_shininess", &material.m_shininess, 1);
-
+	prog4.setUniValueV("material.m_shininess", material.m_shininess);
 	prog4.unbindProgram();
 
+
+	prog5.bindProgram();
+	prog5.setUniValuefV("lightColor", lightColor, 3);
+	prog5.setUniValueM("transMat", &model[0].x, 4);
+	prog5.setUniValueM("normalMat", &normlMat[0].x, 3);
+	ErrCheck(glBindTextureUnit(0,texture.m_diffuse));
+	prog5.setUniValueV("material.m_diffuse", 0);
+	ErrCheck(glBindTextureUnit(1, texture.m_specular));
+	prog5.setUniValueV("material.m_specular", 1);
+	prog5.setUniValueV("material.m_shininess", texture.m_shininess);
+	prog5.unbindProgram();
 
 	BOG::fltPoint currFramTime = 0.f, preFramTime = 0.f, FramTimePeriod,chngVal = 42.f;
 
@@ -152,17 +137,16 @@ int main()
 
 		BOG::setColorBufer(0.25f,0.25f,0.25f,1.f);
 
-		glBindTextureUnit(0, texId);
 		ErrCheck(glBindVertexArray(VAO));
 
 
-		prog4.bindProgram();
-		prog4.setUniValueM("viewProj", &viewProjMat[0].x, 4);
-		prog4.setUniValuefV("lightPos", BOG::currentCam->getPos(), 3);
-		prog4.setUniValuefV("camPos", BOG::currentCam->getPos(), 3);
+		prog5.bindProgram();
+		prog5.setUniValueM("viewProj", &viewProjMat[0].x, 4);
+		prog5.setUniValuefV("lightPos", BOG::currentCam->getPos(), 3);
+		prog5.setUniValuefV("camPos", BOG::currentCam->getPos(), 3);
 
 		ErrCheck(glDrawElements(GL_TRIANGLES, BOG::blockIndex.size(), GL_UNSIGNED_INT, 0));
-		prog4.unbindProgram();
+		prog5.unbindProgram();
 
 		ErrCheck(glBindVertexArray(0));
 		glfwSwapBuffers(BOG::mainWindow->getWindow());
@@ -176,4 +160,38 @@ int main()
 
 	delete BOG::mainWindow;
 	return 0;
+}
+
+uint32_t attachTexture(std::string path)
+{
+	uint32_t texId;
+	glGenTextures(1, &texId);
+	glBindTexture(GL_TEXTURE_2D, texId);
+
+	//float broderColor[] = { .5f,1.f,.78f,1.f };
+	//glTextureParameterfv(texId, GL_TEXTURE_BORDER_COLOR, broderColor);
+
+	glTextureParameteri(texId, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+	glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	int32_t iWidth, iHeight, iNoc;
+	stbi_set_flip_vertically_on_load(1);
+	unsigned char* imgData = stbi_load(path.c_str(), &iWidth, &iHeight, &iNoc, 0);
+
+	if (imgData)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, iWidth, iHeight, 0, iNoc < 4 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, imgData);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cerr << "Unable to load the image file.\n";
+	}
+	stbi_image_free(imgData);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	return texId;
 }
