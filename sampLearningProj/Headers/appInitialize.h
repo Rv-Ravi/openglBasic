@@ -30,6 +30,16 @@ namespace BOG {
 		glm::vec3 vertexNormal;
 	};
 
+	struct Materials {
+		glm::vec3 m_ambient;
+		glm::vec3 m_diffuse;
+		glm::vec3 m_specular;
+		BOG::fltPoint m_shininess;
+
+		Materials(glm::vec3 amb = glm::vec3(0.2f),glm::vec3 dif = glm::vec3(0.8f),glm::vec3 spec = glm::vec3(1.f)
+		,BOG::fltPoint shin = 20.f);
+		~Materials();
+	};
 
 	extern std::array<uint16_t, GLFW_KEY_LAST> keyState;
 	extern std::array<vertexData, 16> block;
