@@ -71,6 +71,7 @@ int main()
 	shaderProgram prog4("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\Lighting\\materialPhongLit.shader");
 	shaderProgram prog5("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\Lighting\\texturePhongLit.shader");
 	shaderProgram prog6("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\Lighting\\dirLight.shader");
+	shaderProgram prog7("D:\\Coding\\GameEngine\\sampLearningProj\\sampLearningProj\\additionalSrc\\shaders\\Lighting\\pointLight.shader");
 	float val[] = { 0.6f,0.3f,1.f };
 
 	prog.bindProgram();
@@ -135,6 +136,20 @@ int main()
 	prog6.setUniValueV("material.m_specular", 1);
 	prog6.setUniValueV("material.m_shininess", texture.m_shininess);
 	prog6.unbindProgram();
+
+	prog7.bindProgram();
+	prog7.setUniValuefV("light.m_ambientIntensity", light.m_ambientIntensity, 3);
+	prog7.setUniValuefV("light.m_diffuseIntensity", light.m_diffuseIntensity, 3);
+	prog7.setUniValuefV("light.m_specularIntensity", light.m_specularIntensity, 3);
+	prog7.setUniValueV("light.m_dist", 7.f);
+	prog7.setUniValueM("transMat", &model[0].x, 4);
+	prog7.setUniValueM("normalMat", &normlMat[0].x, 3);
+	ErrCheck(glBindTextureUnit(0, texture.m_diffuse));
+	prog7.setUniValueV("material.m_diffuse", 0);
+	ErrCheck(glBindTextureUnit(1, texture.m_specular));
+	prog7.setUniValueV("material.m_specular", 1);
+	prog7.setUniValueV("material.m_shininess", texture.m_shininess);
+	prog7.unbindProgram();
 	BOG::fltPoint currFramTime = 0.f, preFramTime = 0.f, FramTimePeriod,chngVal = 42.f;
 
 	uint32_t fCount = 0;
@@ -156,10 +171,10 @@ int main()
 		ErrCheck(glBindVertexArray(VAO));
 
 
-		prog6.bindProgram();
-		prog6.setUniValueM("viewProj", &viewProjMat[0].x, 4);
-		prog6.setUniValuefV("light.m_direction", BOG::currentCam->getCamDir(), 3);
-		prog6.setUniValuefV("camPos", BOG::currentCam->getPos(), 3);
+		prog7.bindProgram();
+		prog7.setUniValueM("viewProj", &viewProjMat[0].x, 4);
+		prog7.setUniValuefV("light.m_position", BOG::currentCam->getPos(), 3);
+		prog7.setUniValuefV("camPos", BOG::currentCam->getPos(), 3);
 
 		ErrCheck(glDrawElements(GL_TRIANGLES, BOG::blockIndex.size(), GL_UNSIGNED_INT, 0));
 		prog6.unbindProgram();
