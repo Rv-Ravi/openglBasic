@@ -58,5 +58,6 @@
     <None Include="additionalSrc\shaders\Lighting\texturePhongLit.shader" />
     <None Include="additionalSrc\shaders\Lighting\dirLight.shader" />
     <None Include="additionalSrc\shaders\Lighting\pointLight.shader" />
+    <None Include="additionalSrc\shaders\Lighting\spotLight.shader" />
   </ItemGroup>
 </Project>

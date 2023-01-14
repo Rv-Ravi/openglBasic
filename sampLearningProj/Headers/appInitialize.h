@@ -56,7 +56,7 @@ namespace BOG {
 
 		glm::vec3 m_ambientIntensity = {0.2f,0.2f,0.2f}, m_diffuseIntensity = {0.8f,0.8f,0.8f}, m_specularIntensity = {1.f,1.f,1.f};
 
-
+		BOG::fltPoint m_dist = 7.f, m_inAngle = 25.f, m_outAngle = 40.f;
 	};
 
 	extern std::array<uint16_t, GLFW_KEY_LAST> keyState;
